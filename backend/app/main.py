@@ -1,7 +1,16 @@
 from fastapi import FastAPI
 
+from app.db.session import engine
+from app.db.base import Base
+from app.api.routes import user
+
 app = FastAPI()
 
+#create the database tables
+Base.metadata.create_all(bind=engine)
+
 @app.get("/")
-async def root():
-    return {"Slotify backend is running!"}
+def root():
+    return {"message":"Slotify backend is running!"}
+
+app.include_router(user.router)
