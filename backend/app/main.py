@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from app.db.session import engine
 from app.db.base import Base
-from app.api.routes import user
+from app.api.routes import user, auth
 
 app = FastAPI()
 
@@ -14,3 +14,4 @@ def root():
     return {"message":"Slotify backend is running!"}
 
 app.include_router(user.router)
+app.include_router(auth.router)
