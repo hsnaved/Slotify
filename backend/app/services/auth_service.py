@@ -10,11 +10,11 @@ def login_user(db: Session, email: str, password: str):
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
-        raise HTTPException(status_code = 400, detail = "Invalid Credentials")
-    
+        raise HTTPException(status_code=400, detail="Invalid Credentials")
+
     if not verify_password(password, user.hashed_password):
-        raise HTTPException(status_code = 400, detail = "Invalid Credentials")  
-    
+        raise HTTPException(status_code=400, detail="Invalid Credentials")
+
     token = create_access_token({"sub": str(user.id)})
 
-    return {"access_token:": token, "toeken_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer"}

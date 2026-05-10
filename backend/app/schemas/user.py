@@ -9,7 +9,7 @@ class UserCreate(BaseModel):
     username: str
     email: EmailStr
     number: str
-    hashed_password: str
+    password: str
     role: UserRole
 
 class UserResponse(BaseModel):
