@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String,Enum
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 from app.schemas.user import UserRole
 
@@ -11,3 +12,5 @@ class User(Base):
     number = Column(String, unique=True)
     hashed_password = Column(String)
     role = Column(Enum(UserRole),default = UserRole.customer)
+
+    businesses = relationship("Business", back_populates="owner")

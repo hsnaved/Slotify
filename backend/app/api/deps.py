@@ -11,6 +11,7 @@ from logging import getLogger
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl = "login")
 
+# Dependency to get the current user from the JWT token, login checking
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
@@ -39,3 +40,13 @@ def get_current_user(
         raise credentails_exception
     
     return user
+
+# Authorization dependency to check if the user is an admin
+def admin_only(current_user: User = Depends(get_current_user)):
+    if current_user.role.value != "admin":
+        raise HTTPException(
+            status_code = 403,
+            detail = "Admins only"
+        )
+    
+    return current_user
