@@ -22,9 +22,14 @@ def create_service(
     db: Session = Depends(get_db),
     current_user: User = Depends(admin_only)
 ):
+    """Create a new `Service` for the given `business_id`.
+
+    The endpoint performs ownership and existence checks then
+    delegates creation to `create_service_service`.
+    """
     return create_service_service(
         business_id=business_id,
         service_data=service_data,
         current_user=current_user,
-        db=db
+        db=db,
     )

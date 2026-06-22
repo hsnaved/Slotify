@@ -13,6 +13,12 @@ def create_service_service(
         current_user: User,
         db: Session
 ):
+    """Create a new service for `business_id` if authorized.
+
+    Performs an existence check for the target `Business`, verifies the
+    `current_user` owns the business (authorization), creates the
+    `Service` and returns the persisted model instance.
+    """
     business = db.query(Business).filter(
             Business.id == business_id
         ).first()
@@ -23,7 +29,8 @@ def create_service_service(
             detail = "Business not found"
         )
     
-    #ownership check
+    # Ownership check: ensure the authenticated user owns the business
+    # before allowing creation of a nested Service.
     if business.owner_id != current_user.id:
         raise HTTPException(
             status_code = 403,
@@ -42,3 +49,4 @@ def create_service_service(
     db.refresh(service)
 
     return service
+    

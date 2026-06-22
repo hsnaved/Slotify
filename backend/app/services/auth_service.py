@@ -5,8 +5,13 @@ from app.models.user import User
 from app.core.security import create_access_token, verify_password
 
 
-
 def login_user(db: Session, email: str, password: str):
+    """Authenticate credentials and return an access token dict.
+
+    Raises HTTP 400 on invalid credentials. On success returns a
+    dictionary containing `access_token` and `token_type` which is the
+    standard OAuth2 response shape used by the frontend.
+    """
     user = db.query(User).filter(User.email == email).first()
 
     if not user:

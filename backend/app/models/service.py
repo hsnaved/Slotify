@@ -5,6 +5,7 @@ from app.db.base import Base
 
 
 class Service(Base):
+    """SQLAlchemy model for a service offered by a business."""
     __tablename__ = "services"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -14,3 +15,13 @@ class Service(Base):
     business_id = Column(Integer, ForeignKey("businesses.id"))
 
     business = relationship("Business", back_populates="services")
+
+    availability_rules = relationship(
+        "AvailabilityRule",
+        back_populates="service"
+    )
+
+    availability_slots = relationship(
+        "AvailabilitySlot",
+        back_populates="service"
+    )

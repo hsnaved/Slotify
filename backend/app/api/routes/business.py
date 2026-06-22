@@ -17,4 +17,9 @@ def create_business(
         db: Session = Depends(get_db),
         current_user: User = Depends(admin_only)
 ):
-    return create_business_service(db, business_data, current_user)
+        """Create a new business owned by the authenticated `current_user`.
+
+        The `admin_only` dependency is used to restrict this endpoint to
+        users with administrative privileges.
+        """
+        return create_business_service(db, business_data, current_user)

@@ -5,17 +5,21 @@ from app.models.business import Business
 from app.models.user import User
 
 
-
 def create_business_service(
-        db:Session,
-        business_data: BusinessCreate,
-        user:User
+    db: Session,
+    business_data: BusinessCreate,
+    user: User,
 ):
-    
+    """Create and persist a new `Business` owned by `user`.
+
+    Returns the newly created `Business` model after committing the
+    transaction.
+    """
+
     business = Business(
-        name = business_data.name,
-        description = business_data.description,
-        owner_id = user.id
+        name=business_data.name,
+        description=business_data.description,
+        owner_id=user.id,
     )
 
     db.add(business)
