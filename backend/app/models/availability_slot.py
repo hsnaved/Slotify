@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Date, Time, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Date, Time, Boolean, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import relationship
 
@@ -7,6 +7,14 @@ from app.db.base import Base
 
 class AvailabilitySlot(Base):
     __tablename__ = "availability_slots"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "service_id",
+            "start_datetime",
+            name="uq_service_slot"
+        ),
+    )
 
     id = Column(Integer, primary_key=True)
 
