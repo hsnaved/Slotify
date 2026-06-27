@@ -1,10 +1,12 @@
+from enum import Enum
+
 class BookingStatus(str, Enum):
     """
     Represents the possible statuses of a booking in Slotify.
     """
 
-    BOOKED = "booked"
-    PENDING = "pending"
-    CANCELLED = "cancelled"
-    COMPLETED = "completed"
-    NO_SHOW = "no_show"
+    BOOKED = "BOOKED"
+    PENDING = "PENDING"
+    CANCELLED = "CANCELLED"
+    COMPLETED = "COMPLETED"
+    NO_SHOW = "NO_SHOW"

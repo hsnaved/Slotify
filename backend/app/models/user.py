@@ -20,3 +20,4 @@ class User(Base):
     role = Column(Enum(UserRole), nullable=False, default=UserRole.CUSTOMER)
 
     businesses = relationship("Business", back_populates="owner")
+    bookings = relationship("Booking", back_populates="customer")

@@ -35,12 +35,8 @@ class AvailabilitySlot(Base):
 
     is_booked = Column(Boolean, default=False)
 
-    service = relationship(
-        "Service",
-        back_populates="availability_slots"
-    )
+    service = relationship("Service", back_populates="availability_slots")
 
-    rule = relationship(
-        "AvailabilityRule",
-        back_populates="slots"
-    )
+    rule = relationship("AvailabilityRule", back_populates="slots")
+
+    booking = relationship("Booking", back_populates="slot", uselist=False)
