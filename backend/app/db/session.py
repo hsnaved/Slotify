@@ -7,10 +7,11 @@ dependency. Sessions are closed after the request completes.
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from app.core.config import settings
 
 # Database connection URL - in production this should come from
 # configuration or environment variables rather than being hard-coded.
-DATABASE_URL = "postgresql://postgres:jamundi@localhost:5432/slotify_db"
+DATABASE_URL = settings.DATABASE_URL
 engine = create_engine(DATABASE_URL)
 sessionLocal = sessionmaker(bind=engine)
 

@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 
-from app.api.deps import admin_only
+from app.api.deps import business_access
 
 from app.models.user import User
 
@@ -18,25 +18,26 @@ from app.services.availability_rule_service import (
 
 router = APIRouter(
     prefix="/services",
-    tags=["Availability Rules"]
+    tags=["availability-rules"]
 )
 
 
 @router.post(
     "/{service_id}/availability-rules",
-    response_model=AvailabilityRuleResponse
+    response_model=AvailabilityRuleResponse,
+    status_code=status.HTTP_201_CREATED
 )
 
 def create_availability_rule(
     service_id: int,
     rule_data: AvailabilityRuleCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(admin_only)
+    current_user: User = Depends(business_access)
 ):
     """Create a new availability rule for a service owned by the authenticated `current_user`.
 
-    The `admin_only` dependency is used to restrict this endpoint to
-    users with administrative privileges.
+    The `business_access` dependency is used to restrict this endpoint to
+    users with administrative or ownership privileges.
     """
     return create_availability_rule_service(
         service_id=service_id,

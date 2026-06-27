@@ -7,12 +7,13 @@ as password hashing/verification and access token creation.
 from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta
+from app.core.config import settings
 
 # These constants control token encoding/decoding. In production the
 # SECRET_KEY should be provided from secure configuration or environment.
-SECRET_KEY = "SECRET_KEY"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

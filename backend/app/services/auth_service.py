@@ -1,3 +1,4 @@
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
@@ -5,14 +6,20 @@ from app.models.user import User
 from app.core.security import create_access_token, verify_password
 
 
-def login_user(db: Session, email: str, password: str):
+def login_user(db: Session, identifier: str, password: str):
     """Authenticate credentials and return an access token dict.
 
     Raises HTTP 400 on invalid credentials. On success returns a
     dictionary containing `access_token` and `token_type` which is the
     standard OAuth2 response shape used by the frontend.
     """
-    user = db.query(User).filter(User.email == email).first()
+    normalized_identifier = identifier.strip().lower()
+    user = db.query(User).filter(
+        or_(
+            func.lower(User.email) == normalized_identifier,
+            func.lower(User.username) == normalized_identifier,
+        )
+    ).first()
 
     if not user:
         raise HTTPException(status_code=400, detail="Invalid Credentials")

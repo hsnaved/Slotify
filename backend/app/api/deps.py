@@ -14,12 +14,12 @@ from app.db.session import get_db
 from app.models.user import User
 from app.core.security import SECRET_KEY, ALGORITHM
 from logging import getLogger
-
+from app.enums.user_role import UserRole
 
 # The OAuth2PasswordBearer dependency uses the token URL for the login
 # route which is expected to return an access token when given valid
 # credentials.
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
 def get_current_user(
@@ -59,14 +59,14 @@ def get_current_user(
     return user
 
 
-def admin_only(current_user: User = Depends(get_current_user)):
-    """Authorization dependency that allows only admin users.
+def business_access(current_user: User = Depends(get_current_user)):
+    """Authorization dependency that allows admin and owner users.
 
-    Raises HTTP 403 if the resolved `current_user` does not have the
-    `admin` role. Returns the `current_user` when the check succeeds so
-    it can be used in the route function.
+    Raises HTTP 403 if the resolved `current_user` does not have either
+    the `admin` or `owner` role. Returns the `current_user` when the
+    check succeeds so it can be used in the route function.
     """
-    if current_user.role.value != "admin":
-        raise HTTPException(status_code=403, detail="Admins only")
+    if current_user.role.value not in {UserRole.ADMIN, UserRole.OWNER}:
+        raise HTTPException(status_code=403, detail="Admins or owners only")
 
     return current_user

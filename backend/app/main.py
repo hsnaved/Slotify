@@ -26,8 +26,8 @@ def root():
     return {"message": "Slotify backend is running!"}
 
 
-app.include_router(user.router)
-app.include_router(auth.router)
-app.include_router(business.router)
-app.include_router(service.router)
-app.include_router(availability_rule.router)
+app.include_router(user.router, prefix="/api/v1")
+app.include_router(auth.router, prefix="/api/v1")
+app.include_router(business.router, prefix="/api/v1")
+app.include_router(service.router, prefix="/api/v1")
+app.include_router(availability_rule.router, prefix="/api/v1")

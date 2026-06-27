@@ -1,15 +1,6 @@
 import enum
 from pydantic import BaseModel, EmailStr
-
-
-class UserRole(enum.Enum):
-    """Enumeration of allowed user roles.
-
-    Values are used to control authorization decisions within the app.
-    """
-    admin = "admin"
-    customer = "customer"
-
+from app.enums.user_role import UserRole
 
 class UserCreate(BaseModel):
     """Request schema for creating a new user."""

@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from app.db.session import get_db
 
-from app.api.deps import admin_only
+from app.api.deps import business_access
 
 from app.models.user import User
 
@@ -13,14 +13,18 @@ from app.schemas.services import(
     ServiceResponse
 )
 
-router = APIRouter(prefix="/services", tags=["services"])    
+router = APIRouter(prefix="/services", tags=["services"])
 
-@router.post("/businesses/{business_id}/services", response_model = ServiceResponse)
+@router.post(
+    "/businesses/{business_id}/services",
+    response_model=ServiceResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_service(
     business_id: int,
     service_data: ServiceCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(admin_only)
+    current_user: User = Depends(business_access)
 ):
     """Create a new `Service` for the given `business_id`.
 

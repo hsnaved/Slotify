@@ -1,18 +1,8 @@
 from datetime import date, time
-from proto import Enum
+from enum import Enum
 from pydantic import BaseModel
+from app.enums.weekdays import WeekDay
 
-
-
-class WeekDay(str, Enum):
-    MONDAY = "MONDAY"
-    TUESDAY = "TUESDAY"
-    WEDNESDAY = "WEDNESDAY"
-    THURSDAY = "THURSDAY"
-    FRIDAY = "FRIDAY"
-    SATURDAY = "SATURDAY"
-    SUNDAY = "SUNDAY"
-    
 class AvailabilityRuleCreate(BaseModel):
     start_date: date
     end_date: date
