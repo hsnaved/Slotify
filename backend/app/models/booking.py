@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 
 from sqlalchemy.sql import func
 
-from app.db.session import Base
+from app.db.base import Base
 
 from app.enums.booking_status import BookingStatus
 

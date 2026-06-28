@@ -70,3 +70,16 @@ def business_access(current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Admins or owners only")
 
     return current_user
+
+def customer_only(current_user: User = Depends(get_current_user)):
+
+    """
+    Allows access only to customers.
+    """
+    if current_user.role != UserRole.CUSTOMER:
+        raise HTTPException(
+            status_code = 403,
+            detail = "Only Customers can perforn this action"
+        )
+    
+    return current_user

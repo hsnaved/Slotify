@@ -34,6 +34,11 @@ class AvailabilitySlot(Base):
     end_datetime = Column(DateTime)
 
     is_booked = Column(Boolean, default=False)
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False
+    )
 
     service = relationship("Service", back_populates="availability_slots")
 

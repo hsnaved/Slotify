@@ -9,7 +9,7 @@ from fastapi import FastAPI
 
 from app.db.session import engine
 from app.db.base import Base
-from app.api.routes import user, auth, business, service, availability_rule
+from app.api.routes import user, auth, business, service, availability_rule, booking
 
 app = FastAPI()
 
@@ -31,3 +31,4 @@ app.include_router(auth.router, prefix="/api/v1")
 app.include_router(business.router, prefix="/api/v1")
 app.include_router(service.router, prefix="/api/v1")
 app.include_router(availability_rule.router, prefix="/api/v1")
+app.include_router(booking.router, prefix="/api/v1")
