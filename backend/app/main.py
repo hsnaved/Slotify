@@ -9,12 +9,12 @@ from fastapi import FastAPI
 
 from app.db.session import engine
 from app.db.base import Base
-from app.api.routes import user, auth, business, service, availability_rule, booking
+from app.api.routes import user, auth, business, service, availability_rule, booking, business_settings
 
 app = FastAPI()
 
 # create the database tables if they do not exist
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
@@ -32,3 +32,4 @@ app.include_router(business.router, prefix="/api/v1")
 app.include_router(service.router, prefix="/api/v1")
 app.include_router(availability_rule.router, prefix="/api/v1")
 app.include_router(booking.router, prefix="/api/v1")
+app.include_router(business_settings.router, prefix="/api/v1")

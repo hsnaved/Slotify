@@ -29,3 +29,16 @@ class ServiceResponse(BaseModel):
         # on the Pydantic version you use this may be `orm_mode = True`
         # or `from_attributes = True`.
         from_attributes = True
+
+class ServiceListResponse(BaseModel):
+    """
+    Service information displayed to customers.
+    """
+
+    id: int
+    name: str
+    description: str
+    duration_minutes: int
+    
+    class Config:
+        from_attributes = True

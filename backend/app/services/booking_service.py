@@ -3,8 +3,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.enums.booking_status import BookingStatus
+from app.enums.cancellation_policy import CancellationPolicy
 from app.models.availability_slot import AvailabilitySlot
 from app.models.booking import Booking
+from app.models.service import Service
+from app.models.business import Business
 from app.models.user import User
 from app.schemas.booking import BookingCreate
 from app.enums.user_role import UserRole
@@ -92,10 +95,18 @@ def create_booking_service(
         # Business may require approval, in which case
         # status = BookingStatus.PENDING)
         # ---------------------------------------------------------
+        settings = availability_slot.service.business.settings
+
+        booking_status = (
+            BookingStatus.PENDING
+            if settings.requires_booking_approval
+            else BookingStatus.BOOKED
+        )
+        
         booking = Booking(
             customer_id=current_user.id,
             slot_id=availability_slot.id,
-            status=BookingStatus.BOOKED
+            status=booking_status
         )
 
         db.add(booking)
@@ -173,6 +184,12 @@ def cancel_booking_service(
             )
 
         slot = booking.slot
+        settings = (
+            slot
+            .service
+            .business
+            .settings
+        )
 
         # --------------------------------------------------
         # CUSTOMER
@@ -186,8 +203,9 @@ def cancel_booking_service(
                     detail="You cannot cancel another customer's booking."
                 )
 
+            window = settings.customer_cancellation_window_minutes
             cancellation_deadline = (
-                slot.start_datetime - timedelta(minutes=30)
+                slot.start_datetime - timedelta(minutes=window)
             )
 
             if datetime.utcnow() > cancellation_deadline:
@@ -217,7 +235,8 @@ def cancel_booking_service(
 
         booking.status = BookingStatus.CANCELLED
 
-        slot.is_booked = False
+        if (settings.cancellation_policy == CancellationPolicy.REOPEN_SLOT):
+            slot.is_booked = False
 
         db.commit()
 
@@ -314,3 +333,40 @@ def complete_booking_service(
             status_code=500,
             detail="Unable to complete booking."
         )
+    
+def get_my_bookings_service(
+    current_user: User,
+    db: Session,
+):
+    """Return all bookings belonging to the authenticated customer."""
+
+    return (
+        db.query(Booking)
+        .filter(
+            Booking.customer_id == current_user.id
+        )
+        .order_by(
+            Booking.created_at.desc()
+        )
+        .all()
+    )
+
+def get_owner_bookings_service(
+    current_user: User,
+    db: Session,
+):
+    """Return all bookings associated with the authenticated business owner."""
+
+    return (
+        db.query(Booking)
+        .join(AvailabilitySlot)
+        .join(Service)
+        .join(Business)
+        .filter(
+            Business.owner_id == current_user.id
+        )
+        .order_by(
+            Booking.created_at.desc()
+        )
+        .all()
+    )

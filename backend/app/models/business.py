@@ -16,3 +16,9 @@ class Business(Base):
 
     owner = relationship("User", back_populates="businesses")
     services = relationship("Service", back_populates="business")
+    settings = relationship(
+        "BusinessSettings",
+        back_populates="business",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )

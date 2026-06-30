@@ -23,3 +23,18 @@ class BusinessResponse(BaseModel):
         # Pydantic. The canonical name is `Config`. This comment keeps
         # the original behaviour while flagging the intended usage.
         from_attributes = True
+
+class BusinessListResponse(BaseModel):
+    """
+    Business information shown to customers.
+    """
+
+    id: int
+
+    name: str
+
+    description: str
+    
+    class Config:
+        from_attributes = True
+    

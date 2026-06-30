@@ -14,7 +14,8 @@ def generate_slots(
     end_time: time,
     duration_minutes: int
 ) -> List[GeneratedSlot]:
-    
+    """Generate slot objects for a single day based on a time window and duration."""
+
     slots = []
 
     day_start = datetime.combine(
@@ -70,6 +71,8 @@ def generate_slots_for_rule(
     end_time,
     duration_minutes
 ) -> List[GeneratedSlot]:
+    """Generate availability slots across a date range for the selected weekdays."""
+
     all_slots = []
 
     current_date = start_date
