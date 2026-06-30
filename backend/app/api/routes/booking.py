@@ -8,11 +8,13 @@ from app.api.deps import (
 )
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.booking import BookingCreate, BookingResponse
-from app.services.booking import (
+from app.schemas.booking import BookingCreate, BookingDetailsResponse, BookingResponse
+from app.services.booking_service import (
     cancel_booking_service,
     complete_booking_service,
     create_booking_service,
+    get_my_bookings_service,
+    get_owner_bookings_service,
 )
 
 
@@ -45,6 +47,25 @@ def create_booking(
         db=db
     )
 
+@router.get(
+    "/me",
+    response_model=list[BookingDetailsResponse],
+)
+def get_my_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(customer_only),
+):
+    """Return every booking created by the authenticated customer.
+
+    The list is ordered from newest to oldest so the customer can review
+    their recent appointments quickly.
+    """
+
+    return get_my_bookings_service(
+        current_user=current_user,
+        db=db,
+    )
+
 @router.patch(
     "/{booking_id}/cancel",
     response_model=BookingResponse
@@ -54,8 +75,10 @@ def cancel_booking(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """
-    Cancels an existing booking.
+    """Cancel an existing booking for the current user.
+
+    The endpoint validates the caller's role and the cancellation window
+    before allowing the booking to be cancelled.
     """
 
     return cancel_booking_service(
@@ -74,12 +97,28 @@ def complete_booking(
     current_user: User = Depends(business_access)
 ):
 
-    """
-    Marks a booking as completed.
+    """Mark a booking as completed after the appointment has ended.
+
+    Only an authenticated business owner or admin can complete a booking
+    once the appointment time has passed.
     """
     
     return complete_booking_service(
         booking_id,
         current_user,
         db
+    )
+
+@router.get(
+    "/owner/me",
+    response_model=list[BookingDetailsResponse],
+)
+def get_owner_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(business_access),
+):
+
+    return get_owner_bookings_service(
+        current_user=current_user,
+        db=db,
     )

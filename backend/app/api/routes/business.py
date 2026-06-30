@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session 
 
 from app.db.session import get_db
-from app.schemas.business import BusinessCreate, BusinessResponse
-from app.services.business_service import create_business_service
+from app.schemas.business import BusinessCreate, BusinessResponse, BusinessListResponse
+from app.services.business_service import create_business_service, get_all_businesses_service, get_owner_business_service
 from app.api.deps import business_access
 from app.models.user import User
 
@@ -24,3 +24,31 @@ def create_business(
         users with administrative or ownership privileges.
         """
         return create_business_service(db, business_data, current_user)
+
+@router.get(
+    "/owner/me",
+    response_model=BusinessResponse,
+)
+def get_owner_business(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(business_access),
+):
+    """Return the business associated with the authenticated owner account."""
+
+    return get_owner_business_service(
+        current_user=current_user,
+        db=db,
+    )
+
+@router.get(
+    "",
+    response_model=list[BusinessListResponse],
+)
+def get_all_businesses(
+    db: Session = Depends(get_db),
+):
+    """Return all registered businesses that are available to customers and visitors."""
+
+    return get_all_businesses_service(
+        db=db,
+    )

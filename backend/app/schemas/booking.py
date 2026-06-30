@@ -29,3 +29,16 @@ class BookingResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class BookingDetailsResponse(BaseModel):
+
+    id: int
+
+    status: BookingStatus
+
+    slot_id: int
+
+    customer_id: int
+
+    class Config:
+        from_attributes = True
